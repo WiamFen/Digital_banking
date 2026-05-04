@@ -6,6 +6,7 @@ import net.wiam.digital_banking.backend.enums.OperationType;
 import net.wiam.digital_banking.backend.repositories.AccountOperationRepository;
 import net.wiam.digital_banking.backend.repositories.BankAccountRepository;
 import net.wiam.digital_banking.backend.repositories.CustomerRepository;
+import net.wiam.digital_banking.backend.services.BankService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,27 +24,9 @@ public class DigitalBankingApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
+	CommandLineRunner commandLineRunner(BankService bankService) {
 		return args -> {
-			BankAccount bankAccount=
-					bankAccountRepository.findById("14606806-e563-4866-9f5e-866fb76afe64").orElse(null);
-			if(bankAccount!=null){
-				System.out.println("***************");
-				System.out.println(bankAccount.getId());
-				System.out.println(bankAccount.getBalance());
-				System.out.println(bankAccount.getStatus());
-				System.out.println(bankAccount.getCreatedAt());
-				System.out.println(bankAccount.getCustomer().getName());
-				System.out.println(bankAccount.getClass().getSimpleName());
-				if(bankAccount instanceof CurrentAccount){
-					System.out.println("Over Draft => "+((CurrentAccount)bankAccount).getOverDraft());
-				}else if(bankAccount instanceof SavingAccount){
-					System.out.println("Rate => "+((SavingAccount)bankAccount).getInterestRate());
-				}
-				bankAccount.getAccountOperations().forEach(op->{
-					System.out.println("=================");
-					System.out.println(op.getType()+"\t"+op.getOperationDate()+"\t"+op.getAmount());
-				});}
+			bankService.consulter();
 		};
 	}
 
