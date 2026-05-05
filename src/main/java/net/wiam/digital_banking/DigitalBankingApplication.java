@@ -3,16 +3,23 @@ package net.wiam.digital_banking;
 import net.wiam.digital_banking.backend.entities.*;
 import net.wiam.digital_banking.backend.enums.AccountStatus;
 import net.wiam.digital_banking.backend.enums.OperationType;
+import net.wiam.digital_banking.backend.exceptions.BalanceNotSufficientException;
+import net.wiam.digital_banking.backend.exceptions.BankAccountNotFoundException;
+import net.wiam.digital_banking.backend.exceptions.CustomerNotFoundException;
 import net.wiam.digital_banking.backend.repositories.AccountOperationRepository;
 import net.wiam.digital_banking.backend.repositories.BankAccountRepository;
 import net.wiam.digital_banking.backend.repositories.CustomerRepository;
+import net.wiam.digital_banking.backend.services.BankAccountService;
+import net.wiam.digital_banking.backend.services.BankAccountServiceImpl;
 import net.wiam.digital_banking.backend.services.BankService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -24,11 +31,40 @@ public class DigitalBankingApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(BankService bankService) {
+	CommandLineRunner commandLineRunner(BankAccountService bankAccountService) {
 		return args -> {
-			bankService.consulter();
+			Stream.of("Kamal","Imane","Jamal").forEach(name -> {
+				Customer customer = new Customer();
+				customer.setName(name);
+				customer.setEmail(name + "@gmail.com");
+				bankAccountService.saveCustomer(customer);
+			});
+			bankAccountService.listCustomers().forEach(customer -> {
+                try {
+					bankAccountService.saveCurrentBankAccount(Math.random()*90000,9000,customer.getId());
+					bankAccountService.saveSavingBankAccount(Math.random()*120000,5.5,customer.getId());
+					List<BankAccount> bankAccounts= bankAccountService.bankAccountList();
+					for(BankAccount bankAccount:bankAccounts){
+						for(int i=0;i<2;i++) {
+							bankAccountService.credit(bankAccount.getId(),1000+Math.random()*12000,"credit");
+							bankAccountService.debit(bankAccount.getId(),1000+Math.random()*9000,"debit");
+						}
+					}
+				} catch (CustomerNotFoundException e) {
+                    e.printStackTrace();
+                } catch (BankAccountNotFoundException | BalanceNotSufficientException e) {
+					e.printStackTrace();
+                }
+            });
 		};
 	}
+
+//	@Bean
+//	CommandLineRunner commandLineRunner(BankService bankService) {
+//		return args -> {
+//			bankService.consulter();
+//		};
+//	}
 
 	//@Bean
 	CommandLineRunner start(CustomerRepository customerRepository,

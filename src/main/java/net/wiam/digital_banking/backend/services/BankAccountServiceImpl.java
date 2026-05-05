@@ -10,8 +10,6 @@ import net.wiam.digital_banking.backend.exceptions.CustomerNotFoundException;
 import net.wiam.digital_banking.backend.repositories.AccountOperationRepository;
 import net.wiam.digital_banking.backend.repositories.BankAccountRepository;
 import net.wiam.digital_banking.backend.repositories.CustomerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,5 +110,10 @@ public class BankAccountServiceImpl implements BankAccountService {
     public void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException {
         debit(accountIdSource,amount,"transfer to "+accountIdDestination);
         credit(accountIdDestination,amount,"transfer from "+accountIdSource);
+    }
+
+    @Override
+    public List<BankAccount> bankAccountList(){
+        return bankAccountRepository.findAll();
     }
 }
