@@ -1,5 +1,6 @@
 package net.wiam.digital_banking;
 
+import net.wiam.digital_banking.backend.dtos.CustomerDTO;
 import net.wiam.digital_banking.backend.entities.*;
 import net.wiam.digital_banking.backend.enums.AccountStatus;
 import net.wiam.digital_banking.backend.enums.OperationType;
@@ -34,10 +35,10 @@ public class DigitalBankingApplication {
 	CommandLineRunner commandLineRunner(BankAccountService bankAccountService) {
 		return args -> {
 			Stream.of("Kamal","Imane","Jamal").forEach(name -> {
-				Customer customer = new Customer();
-				customer.setName(name);
-				customer.setEmail(name + "@gmail.com");
-				bankAccountService.saveCustomer(customer);
+				CustomerDTO customerDTO = new CustomerDTO();
+				customerDTO.setName(name);
+				customerDTO.setEmail(name + "@gmail.com");
+				bankAccountService.saveCustomer(customerDTO);
 			});
 			bankAccountService.listCustomers().forEach(customer -> {
                 try {
