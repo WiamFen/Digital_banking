@@ -1,6 +1,9 @@
 package net.wiam.digital_banking;
 
+import net.wiam.digital_banking.backend.dtos.BankAccountDTO;
+import net.wiam.digital_banking.backend.dtos.CurrentBankAccountDTO;
 import net.wiam.digital_banking.backend.dtos.CustomerDTO;
+import net.wiam.digital_banking.backend.dtos.SavingBankAccountDTO;
 import net.wiam.digital_banking.backend.entities.*;
 import net.wiam.digital_banking.backend.enums.AccountStatus;
 import net.wiam.digital_banking.backend.enums.OperationType;
@@ -44,11 +47,17 @@ public class DigitalBankingApplication {
                 try {
 					bankAccountService.saveCurrentBankAccount(Math.random()*90000,9000,customer.getId());
 					bankAccountService.saveSavingBankAccount(Math.random()*120000,5.5,customer.getId());
-					List<BankAccount> bankAccounts= bankAccountService.bankAccountList();
-					for(BankAccount bankAccount:bankAccounts){
+					List<BankAccountDTO> bankAccounts= bankAccountService.bankAccountList();
+					for(BankAccountDTO bankAccount:bankAccounts){
 						for(int i=0;i<2;i++) {
-							bankAccountService.credit(bankAccount.getId(),1000+Math.random()*12000,"credit");
-							bankAccountService.debit(bankAccount.getId(),1000+Math.random()*9000,"debit");
+							String accountId;
+							if(bankAccount instanceof SavingBankAccountDTO){
+								accountId=((SavingBankAccountDTO)bankAccount).getId();
+							}else {
+								accountId=((CurrentBankAccountDTO)bankAccount).getId();
+							}
+							bankAccountService.credit(accountId,1000+Math.random()*12000,"credit");
+							bankAccountService.debit(accountId,1000+Math.random()*9000,"debit");
 						}
 					}
 				} catch (CustomerNotFoundException e) {

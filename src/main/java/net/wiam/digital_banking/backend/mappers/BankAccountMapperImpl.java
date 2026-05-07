@@ -1,7 +1,11 @@
 package net.wiam.digital_banking.backend.mappers;
 
+import net.wiam.digital_banking.backend.dtos.CurrentBankAccountDTO;
 import net.wiam.digital_banking.backend.dtos.CustomerDTO;
+import net.wiam.digital_banking.backend.dtos.SavingBankAccountDTO;
+import net.wiam.digital_banking.backend.entities.CurrentAccount;
 import net.wiam.digital_banking.backend.entities.Customer;
+import net.wiam.digital_banking.backend.entities.SavingAccount;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +27,33 @@ public class BankAccountMapperImpl {
 //        customer.setName(customerDTO.getName());
 //        customer.setEmail(customerDTO.getEmail());
         return customer;
+    }
+
+    public SavingBankAccountDTO fromSavingBankAccount(SavingAccount savingAccount) {
+        SavingBankAccountDTO savingBankAccountDTO=new SavingBankAccountDTO();
+        BeanUtils.copyProperties(savingAccount,savingBankAccountDTO);
+        savingBankAccountDTO.setCustomerDTO(fromCustomer(savingAccount.getCustomer()));
+        savingBankAccountDTO.setType(savingAccount.getClass().getSimpleName());
+        return savingBankAccountDTO;
+    }
+    public SavingAccount fromSavingAccountDTO(SavingBankAccountDTO savingBankAccountDTO) {
+        SavingAccount savingAccount = new SavingAccount();
+        BeanUtils.copyProperties(savingBankAccountDTO,savingAccount);
+        savingAccount.setCustomer(fromCustomerDTO(savingBankAccountDTO.getCustomerDTO()));
+        return savingAccount;
+    }
+
+    public CurrentBankAccountDTO fromCurrentBankAccount(CurrentAccount currentAccount) {
+        CurrentBankAccountDTO currentBankAccountDTO=new CurrentBankAccountDTO();
+        BeanUtils.copyProperties(currentAccount,currentBankAccountDTO);
+        currentBankAccountDTO.setCustomerDTO(fromCustomer(currentAccount.getCustomer()));
+        currentBankAccountDTO.setType(currentAccount.getClass().getSimpleName());
+        return currentBankAccountDTO;
+    }
+    public CurrentAccount fromCurrentAccountDTO(CurrentBankAccountDTO currentBankAccountDTO) {
+        CurrentAccount currentAccount = new CurrentAccount();
+        BeanUtils.copyProperties(currentBankAccountDTO,currentAccount);
+        currentAccount.setCustomer(fromCustomerDTO(currentBankAccountDTO.getCustomerDTO()));
+        return currentAccount;
     }
 }
