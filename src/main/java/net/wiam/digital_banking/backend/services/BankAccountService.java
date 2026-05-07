@@ -1,9 +1,6 @@
 package net.wiam.digital_banking.backend.services;
 
-import net.wiam.digital_banking.backend.dtos.BankAccountDTO;
-import net.wiam.digital_banking.backend.dtos.CurrentBankAccountDTO;
-import net.wiam.digital_banking.backend.dtos.CustomerDTO;
-import net.wiam.digital_banking.backend.dtos.SavingBankAccountDTO;
+import net.wiam.digital_banking.backend.dtos.*;
 import net.wiam.digital_banking.backend.entities.BankAccount;
 import net.wiam.digital_banking.backend.entities.CurrentAccount;
 import net.wiam.digital_banking.backend.entities.Customer;
@@ -31,4 +28,8 @@ public interface BankAccountService {
     CustomerDTO updateCustomer(CustomerDTO customerDTO);
 
     void deleteCustomer(Long customerId);
+
+    List<AccountOperationDTO> accountHistory(String accountId);
+
+    AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
 }

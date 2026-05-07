@@ -1,8 +1,10 @@
 package net.wiam.digital_banking.backend.mappers;
 
+import net.wiam.digital_banking.backend.dtos.AccountOperationDTO;
 import net.wiam.digital_banking.backend.dtos.CurrentBankAccountDTO;
 import net.wiam.digital_banking.backend.dtos.CustomerDTO;
 import net.wiam.digital_banking.backend.dtos.SavingBankAccountDTO;
+import net.wiam.digital_banking.backend.entities.AccountOperation;
 import net.wiam.digital_banking.backend.entities.CurrentAccount;
 import net.wiam.digital_banking.backend.entities.Customer;
 import net.wiam.digital_banking.backend.entities.SavingAccount;
@@ -55,5 +57,11 @@ public class BankAccountMapperImpl {
         BeanUtils.copyProperties(currentBankAccountDTO,currentAccount);
         currentAccount.setCustomer(fromCustomerDTO(currentBankAccountDTO.getCustomerDTO()));
         return currentAccount;
+    }
+
+    public AccountOperationDTO fromAccountOperation(AccountOperation accountOperation){
+        AccountOperationDTO accountOperationDTO=new AccountOperationDTO();
+        BeanUtils.copyProperties(accountOperation,accountOperationDTO);
+        return accountOperationDTO;
     }
 }
