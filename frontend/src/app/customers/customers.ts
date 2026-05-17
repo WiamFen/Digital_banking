@@ -5,6 +5,7 @@ import {AsyncPipe, JsonPipe, NgIf} from '@angular/common';
 import {catchError, map, Observable, throwError} from 'rxjs';
 import {CustomerModel} from '../model/customer.model';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-customers',
@@ -21,7 +22,7 @@ export class Customers implements OnInit{
   customers! : Observable<Array<CustomerModel>>;
   errorMessage! : String;
   searchFormGroup : FormGroup | undefined;
-  constructor(private customerService : Customer, private fb: FormBuilder) { }
+  constructor(private customerService : Customer, private fb: FormBuilder, private router : Router) { }
   ngOnInit() {
     this.searchFormGroup=this.fb.group({
       keyword : this.fb.control("")
@@ -56,5 +57,16 @@ export class Customers implements OnInit{
         console.log(err);
       }
     })
+  }
+
+  // handleCustomerAccounts(customer: CustomerModel) {
+  //   this.router.navigateByUrl("/customer-accounts/"+customer.id,{state :customer});
+  // }
+
+  handleCustomerAccounts(customer: CustomerModel) {
+    this.router.navigate(
+      ["/customer-accounts", customer.id],
+      { state: customer }
+    );
   }
 }
